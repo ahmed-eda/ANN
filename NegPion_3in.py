@@ -10,52 +10,57 @@ from keras.models import load_model
 # input variable to program
 inputFile = 'datasets/data 2017_pi+ 7.7.xlsx'
 inputSheetName = 'main'
-outputFile = 'out.xlsx'
-outputSheetName = 'predicat'
-nameFigImg = 'fig.png'
+outputFile = 'out_in3.xlsx'
+outputSheetName = 'predicat_in3'
+nameFigImg = 'fig_in3.png'
 
 
 
 
 # Read the data from the CSV file
 data = pd.read_excel(inputFile,sheet_name=inputSheetName)
-data = data[data['N part']==337]
+#data = data[data['N part']==337]
 # Split the data into input and output variables
 #X = data.drop('sqrt', axis=1) #static input for each case : extra data of fiting
 #X = data.drop('massno', axis=1) #static input for each case : extra data of fiting
 #X = data.drop('output', axis=1)
 
-#X = data.drop('Spectrum', axis=1)
-X = data['Pt']
+X = data.drop('Spectrum', axis=1)
+#X = data['Pt']
 y = data['Spectrum']
 
 
-# Load the saved model
-model = load_model('NegPion_L7_single_input.h5')
 
-'''
+# Load the saved model
+model = load_model('NegPion_L9.h5')
+
 # Define the model
+'''
 model = Sequential()
-model.add(Dense(9, input_dim=1, activation='relu'))
-model.add(Dense(18, activation='relu'))
-model.add(Dense(27, activation='relu'))
-model.add(Dense(27, activation='relu'))
-model.add(Dense(18, activation='relu'))
+model.add(Dense(3, input_dim=3, activation='relu'))
 model.add(Dense(9, activation='relu'))
+model.add(Dense(27, activation='relu'))
+
+
+
+model.add(Dense(27, activation='relu'))
+model.add(Dense(9, activation='relu'))
+model.add(Dense(3, activation='relu'))
 model.add(Dense(1, activation='linear'))
+'''
 
 # Compile the model with Levenberg-Marquardt optimizer
 #optimizer = RMSprop(lr=0.001, rho=0.001)
 #model.compile(loss='mean_squared_error', optimizer=optimizer)
-model.compile(loss='mean_squared_error', optimizer='adam')
+#model.compile(loss='mean_squared_error', optimizer='adam')
 
 # Train the model
 #model.fit(X, y, epochs=100, batch_size=32, validation_split=0.2)
-model.fit(X, y, epochs=500, batch_size=32)
-'''
+#model.fit(X, y, epochs=1000, batch_size=32)
+
 
 # Save the model
-#model.save('NegPion_L7_single_input.h5')
+#model.save('NegPion_L9.h5')
 
 # Load the saved model
 #model = load_model('pion20_1000.h5')
@@ -75,26 +80,31 @@ predictions = model.predict(new_data)
 print("predictions is : ")
 print(predictions)
 
+# for drawing in 2d i choose Pt as x-axis
+xg = new_data['Pt']
+
+
 # Plot the data and predictions
-plt.plot(newX, y, 'bo', label='Actual')
-plt.plot(newX, predictions, 'ro', label='Predicted')
+plt.plot(xg, y, 'bo', label='Actual')
+plt.plot(xg, predictions, 'ro', label='Predicted')
 plt.xlabel('newX')
 plt.ylabel('Output')
 plt.legend()
-plt.scatter(newX, y)
-plt.scatter(newX, predictions)
+
+plt.semilogy(xg,  y)
+plt.semilogy(xg, predictions)
+
+plt.scatter(xg, y)
+plt.scatter(xg, predictions)
 
 
-plt.semilogy(newX,  y)
-plt.semilogy(newX, predictions)
-
-#plt.show()
+plt.show()
 plt.savefig(nameFigImg)
 
 # Write predictions and plot data to Excel file
 #output = pd.DataFrame({'y': X.values.flatten(), 'Actual': y.values.flatten()})
 #outputpredicat = pd.DataFrame({'y': X.values.flatten(), 'Actual': y.values.flatten(), 'Predicted': predictions.flatten()})
-outputpredicat = pd.DataFrame({'Pt': newX.values.flatten(),'Actual': y.values.flatten(), 'Predicted': predictions.flatten()})
+outputpredicat = pd.DataFrame({ 'Pt': xg.values.flatten(),'Actual': y.values.flatten(), 'Predicted': predictions.flatten()})
 # output is data frame
 
 # Write the DataFrames to an Excel file with three sheets
@@ -105,7 +115,7 @@ with pd.ExcelWriter(outputFile) as writer:
 
 
 print("End")
-
+print(model.summary())
 
 def GetWeightsBiases():
     # print some information about the model
