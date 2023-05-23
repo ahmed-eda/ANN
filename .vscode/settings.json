@@ -1,4 +1,4 @@
 {
     "notebook.showFoldingControls": "always",
-    "notebook.output.textLineLimit": 5
+    "notebook.output.textLineLimit": 20
 }
