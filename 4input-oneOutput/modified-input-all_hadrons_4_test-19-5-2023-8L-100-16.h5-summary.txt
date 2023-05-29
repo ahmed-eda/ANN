@@ -1,0 +1,23 @@
+Model: "modified-input-all_hadrons_4_test-19-5-2023-8L-100-16.h5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_112 (Dense)           (None, 40)                200       
+                                                                 
+ dense_113 (Dense)           (None, 40)                1640      
+                                                                 
+ dense_114 (Dense)           (None, 80)                3280      
+                                                                 
+ dense_115 (Dense)           (None, 80)                6480      
+                                                                 
+ dense_116 (Dense)           (None, 40)                3240      
+                                                                 
+ dense_117 (Dense)           (None, 40)                1640      
+                                                                 
+ dense_118 (Dense)           (None, 1)                 41        
+                                                                 
+=================================================================
+Total params: 16521 (64.54 KB)
+Trainable params: 16521 (64.54 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________

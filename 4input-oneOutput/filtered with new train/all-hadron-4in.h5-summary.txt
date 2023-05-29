@@ -1,0 +1,23 @@
+Model: "all-hadron-4in.h5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_91 (Dense)            (None, 40)                200       
+                                                                 
+ dense_92 (Dense)            (None, 40)                1640      
+                                                                 
+ dense_93 (Dense)            (None, 80)                3280      
+                                                                 
+ dense_94 (Dense)            (None, 80)                6480      
+                                                                 
+ dense_95 (Dense)            (None, 40)                3240      
+                                                                 
+ dense_96 (Dense)            (None, 40)                1640      
+                                                                 
+ dense_97 (Dense)            (None, 1)                 41        
+                                                                 
+=================================================================
+Total params: 16521 (64.54 KB)
+Trainable params: 16521 (64.54 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________

@@ -1,20 +1,20 @@
-Model: "sequential_6"
+Model: "modified-input-all_hadrons_4_test-19-5-2023-8L-100-16.h5"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
- dense_38 (Dense)            (None, 40)                200       
+ dense_98 (Dense)            (None, 40)                200       
                                                                  
- dense_39 (Dense)            (None, 40)                1640      
+ dense_99 (Dense)            (None, 40)                1640      
                                                                  
- dense_40 (Dense)            (None, 80)                3280      
+ dense_100 (Dense)           (None, 80)                3280      
                                                                  
- dense_41 (Dense)            (None, 80)                6480      
+ dense_101 (Dense)           (None, 80)                6480      
                                                                  
- dense_42 (Dense)            (None, 40)                3240      
+ dense_102 (Dense)           (None, 40)                3240      
                                                                  
- dense_43 (Dense)            (None, 40)                1640      
+ dense_103 (Dense)           (None, 40)                1640      
                                                                  
- dense_44 (Dense)            (None, 1)                 41        
+ dense_104 (Dense)           (None, 1)                 41        
                                                                  
 =================================================================
 Total params: 16521 (64.54 KB)
