@@ -1,20 +1,20 @@
-Model: "all-hadron-4in.h5"
+Model: "sequential_6"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
- dense_91 (Dense)            (None, 40)                200       
+ dense_38 (Dense)            (None, 40)                200       
                                                                  
- dense_92 (Dense)            (None, 40)                1640      
+ dense_39 (Dense)            (None, 40)                1640      
                                                                  
- dense_93 (Dense)            (None, 80)                3280      
+ dense_40 (Dense)            (None, 80)                3280      
                                                                  
- dense_94 (Dense)            (None, 80)                6480      
+ dense_41 (Dense)            (None, 80)                6480      
                                                                  
- dense_95 (Dense)            (None, 40)                3240      
+ dense_42 (Dense)            (None, 40)                3240      
                                                                  
- dense_96 (Dense)            (None, 40)                1640      
+ dense_43 (Dense)            (None, 40)                1640      
                                                                  
- dense_97 (Dense)            (None, 1)                 41        
+ dense_44 (Dense)            (None, 1)                 41        
                                                                  
 =================================================================
 Total params: 16521 (64.54 KB)
