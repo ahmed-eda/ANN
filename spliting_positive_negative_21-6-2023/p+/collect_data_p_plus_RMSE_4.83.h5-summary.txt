@@ -1,0 +1,23 @@
+Model: "collect_data_p_plus_.h5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_7 (Dense)             (None, 40)                200       
+                                                                 
+ dense_8 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_9 (Dense)             (None, 80)                3280      
+                                                                 
+ dense_10 (Dense)            (None, 80)                6480      
+                                                                 
+ dense_11 (Dense)            (None, 40)                3240      
+                                                                 
+ dense_12 (Dense)            (None, 40)                1640      
+                                                                 
+ dense_13 (Dense)            (None, 1)                 41        
+                                                                 
+=================================================================
+Total params: 16521 (64.54 KB)
+Trainable params: 16521 (64.54 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
