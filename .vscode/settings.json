@@ -1,4 +1,8 @@
 {
     "notebook.showFoldingControls": "always",
-    "notebook.output.textLineLimit": 20
+    "notebook.output.textLineLimit": 20,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none"
 }
