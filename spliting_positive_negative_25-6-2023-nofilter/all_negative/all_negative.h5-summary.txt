@@ -2,19 +2,19 @@ Model: "all_negative.h5"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
- dense_28 (Dense)            (None, 40)                200       
+ dense (Dense)               (None, 40)                200       
                                                                  
- dense_29 (Dense)            (None, 40)                1640      
+ dense_1 (Dense)             (None, 40)                1640      
                                                                  
- dense_30 (Dense)            (None, 80)                3280      
+ dense_2 (Dense)             (None, 80)                3280      
                                                                  
- dense_31 (Dense)            (None, 80)                6480      
+ dense_3 (Dense)             (None, 80)                6480      
                                                                  
- dense_32 (Dense)            (None, 40)                3240      
+ dense_4 (Dense)             (None, 40)                3240      
                                                                  
- dense_33 (Dense)            (None, 40)                1640      
+ dense_5 (Dense)             (None, 40)                1640      
                                                                  
- dense_34 (Dense)            (None, 1)                 41        
+ dense_6 (Dense)             (None, 1)                 41        
                                                                  
 =================================================================
 Total params: 16521 (64.54 KB)
