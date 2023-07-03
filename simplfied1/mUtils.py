@@ -17,6 +17,9 @@ class MyParam:
 # Costractor
     def __init__(self):
         # data parameters
+        self.outFolder = 'out'
+        self.inputFolder = 'data'
+        self.modelNamePath = ''
         self.inputFile = ''
         self.inputSheetName = ''
         self.data = ''
@@ -41,6 +44,7 @@ class MyParam:
         self.summaryOutFile = ''
         self.outputSheetName = ''
         self.nameFigImg = ''
+        self.nameAllFigImg = ''
         print('end class construction')
 
 # Utility function
@@ -66,8 +70,10 @@ class MyParam:
 # Methods
 
 # Init
-    def init_param(self,_inputfile='',sheetName='Sheet1'):
+    def init_param(self,_outfolder='out',_inputFolder='data',_inputfile='',sheetName='Sheet1'):
         # data parameters
+        # Get the current working directory
+        cwd = os.getcwd()
         if(len(_inputfile)>0):
             self.inputFile = _inputfile
         else:
@@ -77,6 +83,17 @@ class MyParam:
         # Model parameteres 
         pass
         # Output parameters
+        subdir = os.path.join(cwd, _inputFolder)
+        if not os.path.exists(subdir):
+            os.makedirs(subdir)
+        self.inputFolder= str(subdir)
+        subdir=''
+        self.inputFile = os.path.join(self.inputFolder,self.inputFile)        
+        # Create a subdirectory if it doesn't exist
+        subdir = os.path.join(cwd, _outfolder)
+        if not os.path.exists(subdir):
+            os.makedirs(subdir)
+        self.outFolder= str(subdir)
         pass
         print('end init_param')
     
@@ -119,11 +136,21 @@ class MyParam:
             raise ValueError("No model files found at set model file in the current directory")
         
         # Output parameters
+        self.modelNamePath = os.path.join(self.inputFolder,self.modelName)
+          
         self.outputFile = 'out_ '+self.modelName+' .xlsx'
         self.summaryOutFile = self.modelName + ' _ Summary .txt'
         self.outputSheetName = 'predicat_ '+self.modelName+' '
-        self.nameFigImg = 'fig_in4_ '+self.modelName+' .png'
+        self.nameFigImg = 'fig_Sep_ '+self.modelName+' .png'
+        self.nameAllFigImg = 'fig_All_ '+self.modelName+' .png'
+        # add out path
+        self.outputFile = os.path.join(self.outFolder,self.outputFile)
+        self.summaryOutFile = os.path.join(self.outFolder,self.summaryOutFile)
+        #self.outputSheetName = os.path.join(self.outFolder,self.outputSheetName)
+        self.nameFigImg = os.path.join(self.outFolder,self.nameFigImg)
+        self.nameAllFigImg = os.path.join(self.outFolder,self.nameAllFigImg)
 
+        
         print('end set_model_config_param')
 
 
@@ -156,7 +183,9 @@ class MyParam:
         
         self.model.fit(self.X_train, self.y, epochs=self.myepochs, batch_size=self.mybatchSize) 
         # Save the model
-        self.model.save(self.modelName) 
+        self.modelNamePath = os.path.join(self.outFolder,self.modelName)
+        self.model.save(self.modelNamePath) 
+        #self.model.save(os.path.join(self.outFolder,self.modelName)) 
 
         print('end create model')
 
@@ -165,7 +194,9 @@ class MyParam:
     def load_or_creat_Model(self,load=True):
         if(load):        
            # load the selected model
-           self.model = load_model(self.modelName)        
+           self.modelNamePath = os.path.join(self.inputFolder,self.modelName)
+           self.model = load_model(self.modelNamePath)        
+           #self.model = load_model(self.modelName)        
            print('model is loaded : ',self.model)
         else:
             # create model
@@ -254,7 +285,7 @@ class MyParam:
             plt.scatter(self.mergedData['Pt'][self.mergedData['N part']==n],self.mergedData['predictions'][self.mergedData['N part']==n])
 
             #print('n test :\n',mergedData['Pt'][mergedData['N part']==n])
-        plt.savefig("fig-all-"+self.nameFigImg)
+        plt.savefig(self.nameAllFigImg)
         print("end plotting "+"fig-all-"+self.nameFigImg )
         
         # Define the list ofValues and plot the data for each iteration
@@ -374,7 +405,7 @@ class MyParam:
         print('end out model summary')
 
 # Start process
-    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = ''):
+    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = '',_outfolder='out',_inputFolder='data'):
         # return parameter class contain only structur to use in app
         # self.MyParam() 
         # give the file name to class parameters , also Sheet name if don't default is 'Sheet1'
