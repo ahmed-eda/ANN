@@ -6,7 +6,7 @@ def main():
     print("Starting main call")
 
     p = u.MyParam()
-    p.our_procedure(_modelNameP='mtest.h5',_loadP=False)
+    p.our_procedure(_modelNameP='mtest.h5',_loadP=True)
     #p.init_param()
     #p.get_data_in_Param()
 
