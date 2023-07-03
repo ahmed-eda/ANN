@@ -405,11 +405,11 @@ class MyParam:
         print('end out model summary')
 
 # Start process
-    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = '',_outfolder='out',_inputFolder='data'):
+    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = '',_outfolder='out',_inputFolder='data',_sheetName='Sheet1'):
         # return parameter class contain only structur to use in app
         # self.MyParam() 
         # give the file name to class parameters , also Sheet name if don't default is 'Sheet1'
-        self.init_param(_inputfile=_fileNameP) # get current excel sheet (only one in folder)               
+        self.init_param(_inputfile=_fileNameP,_outfolder=_outfolder,_inputFolder=_inputFolder,sheetName=_sheetName) # get current excel sheet (only one in folder)               
         # get the data from excel file and save it class parameter
         self.get_data_in_Param()
         # normaliz input
