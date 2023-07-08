@@ -52,9 +52,10 @@ class MyParam:
 
     # Get current data excel file name (doesn't start with out* ) 
     def get_input_file_name(self):
+        readFolder = self.inputFolder
         print('os.listdir(".") : ',os.listdir("."))
         excel_files = [
-            f for f in os.listdir(".") if f.endswith(".xlsx") and not f.startswith("out")
+            f for f in os.listdir(readFolder) if f.endswith(".xlsx") and not f.startswith("out")
         ]
         if not excel_files:
             raise ValueError("No Excel files found in the current directory")
@@ -75,15 +76,13 @@ class MyParam:
         # data parameters
         # Get the current working directory
         cwd = os.getcwd()
-        if(len(_inputfile)>0):
-            self.inputFile = _inputfile
-        else:
-            self.inputFile = self.get_input_file_name() # get current excel file in the folder
+
+        
         
         self.inputSheetName = "Sheet1"        
         # Model parameteres 
-        self.epochs=_epochP
-        self.batch_size =_batchSizeP
+        self.myepochs=_epochP
+        self.mybatchSize =_batchSizeP
         pass
         # Output parameters
         subdir = os.path.join(cwd, _inputFolder)
@@ -91,7 +90,15 @@ class MyParam:
             os.makedirs(subdir)
         self.inputFolder= str(subdir)
         subdir=''
-        self.inputFile = os.path.join(self.inputFolder,self.inputFile)        
+        
+        if(len(_inputfile)>0):
+            self.inputFile = os.path.join(self.inputFolder,self.inputFile)  
+            #self.inputFile = _inputfile
+        else:
+            self.inputFile = self.get_input_file_name() # get current excel file in the folder
+            self.inputFile = os.path.join(self.inputFolder,self.inputFile)  
+
+        print('input file : ',self.inputFile)       
         # Create a subdirectory if it doesn't exist
         subdir = os.path.join(cwd, _outfolder)
         if not os.path.exists(subdir):
@@ -162,6 +169,7 @@ class MyParam:
     def creat__new_model(self):
         # Define the model
         self.model = Sequential(name=self.modelName)
+        print('fun : create_new_model : modelname',self.modelName)
         # Add the first dense layer
         self.model.add(Dense(40, input_dim=4, activation='relu'))
         # Add batch normalization
@@ -178,13 +186,16 @@ class MyParam:
         # Compile the model with Levenberg-Marquardt optimizer
         optimizer = RMSprop(learning_rate=0.001, rho=0.001,)
         self.model.compile(loss='mean_squared_error', optimizer=optimizer)
+        print('after compiling model : model is: ',self.model)
         ''' train the model & save current compiled model  '''
         # Train the model
         #model.fit(X, y, epochs=100, batch_size=32, validation_split=0.2)
-        self.myepochs = int(_epoch) 
-        self.mybatchSize = int(_batchSize)
-        
+        #self.myepochs = int(100) 
+        #self.mybatchSize = int(32)
+        print('my epochs : ',self.myepochs)
+        print('my batch size : ',self.mybatchSize)
         self.model.fit(self.X_train, self.y, epochs=self.myepochs, batch_size=self.mybatchSize) 
+        print('model after fitting : ',self.model)
         # Save the model
         self.modelNamePath = os.path.join(self.outFolder,self.modelName)
         self.model.save(self.modelNamePath) 
@@ -204,6 +215,7 @@ class MyParam:
         else:
             # create model
             self.creat__new_model()
+            print('end create model')
 
         print('end load or create model')
     
@@ -245,12 +257,15 @@ class MyParam:
 
 
         # datap : data + prediction
-        self.datap =pd.DataFrame(self.datap) # pd.DataFrame(datape12)# pd.DataFrame(datap)
+        #self.datap =pd.DataFrame(self.datap) # pd.DataFrame(datape12)# pd.DataFrame(datap)
         # xapf : datap after filteration
-        xapf= pd.DataFrame(self.datap)
-        xapf = xapf[xapf['mass']==0.13957]
+        xapf= self.datap.copy(deep=True)
+        print('datap = ',self.datap)
+        print('xapf : ',xapf)
+        xapf = xapf[xapf['mass']== 0.13957]   #0.493677] #0.13957]
         xapf = xapf[xapf['s']==7.7]
         #xapf = xapf[xapf['N part']==337]
+        print('xapf modified : ',xapf)
 
         # detinct N Part values
         N_Part_Values  =xapf['N part'].unique() #xap['N part'].unique() # xapf['N part'].unique()
@@ -278,7 +293,7 @@ class MyParam:
         print('merged data is : \n',self.mergedData)
 
         # modify upper and lower error values
-        self.mergedData['err1'] = self.mergedData['spectrum'] - self.mergedData['err1']
+        self.mergedData['err1'] = self.mergedData['spectrum'] - self.mergedData['err2']
         self.mergedData['err2'] = self.mergedData['err2'] + self.mergedData['spectrum']
 
         yerror = self.mergedData['err2']-self.mergedData['err1']
@@ -350,7 +365,118 @@ class MyParam:
         print("end plotting ",self.nameFigImg)
 
         print('end draws of model')
+
+   # another draw
+    def draws_of_model_error_bar2(self):
+        # for drawing in 2d i choose Pt as x-axis
+        """ error = data['spectrum'] - predictions['predictions']
+        error = error.to_frame('error') """
+
+        # merge date[] with predictions
+        self.datap = pd.merge(self.data,self.predictions,left_index=True, right_index=True)
+        print('shape of datap',self.datap.shape)
+
+
+        # datap : data + prediction
+        #self.datap =pd.DataFrame(self.datap) # pd.DataFrame(datape12)# pd.DataFrame(datap)
+        # xapf : datap after filteration
+        xapf= self.datap.copy(deep=True)
+        print('datap = ',self.datap)
+        print('xapf : ',xapf)
+        xapf = xapf[xapf['mass']== 0.13957]   #0.493677] #0.13957]
+        xapf = xapf[xapf['s']==7.7]
+        #xapf = xapf[xapf['N part']==337]
+        print('xapf modified : ',xapf)
+
+        # detinct N Part values
+        N_Part_Values  =xapf['N part'].unique() #xap['N part'].unique() # xapf['N part'].unique()
+        print('Npart values : \n')
+        for n in N_Part_Values:
+            print('N is : ',n)
+        print('Npart values : \n',N_Part_Values)
+
+        # create graph data set  = mergedData
+        # to add err 1
+        dataGraphe1 = pd.merge(xapf['Pt'],xapf['err1'],left_index=True, right_index=True)
+        print('datagraph1 : \n',dataGraphe1)
+        # to add err 2
+        dataGraphe12 = pd.merge(dataGraphe1,xapf['err2'],left_index=True, right_index=True)
+        print('datagraph12 : \n',dataGraphe12)
+        # to add predictions
+        dataGraph12p = pd.merge(dataGraphe12,xapf['predictions'],left_index=True, right_index=True)
+        print('datagraph12p : \n',dataGraph12p)
+        # finally add spectrum
+        dataGraph12ps = pd.merge(dataGraph12p,xapf['spectrum'],left_index=True, right_index=True)
+        print('dataGraph12ps : \n', dataGraph12ps)
+        print('shape of dataGraph12ps',dataGraph12ps.shape)
+        # Plot the data and predictions
+        self.mergedData = pd.merge(dataGraph12ps,xapf['N part'],left_index=True, right_index=True)
+        print('merged data is : \n',self.mergedData)
+
+        # modify upper and lower error values
+        #self.mergedData['err1'] = self.mergedData['spectrum'] - self.mergedData['err2']
+        #self.mergedData['err2'] = self.mergedData['err2'] + self.mergedData['spectrum']
+
+        yerror = self.mergedData['err2']
+        print('yerror : ',yerror.shape)
+        error = self.mergedData['err2'] #yerror.to_numpy()
+        print('error : ',error.shape)
+        # Create a figure with  subplots
+        #fig, axs = plt.subplots(nrows=len(N_Part_Values), ncols=1, figsize=(10, 100))
+        
+        for i, n in enumerate(N_Part_Values):
+            
+
+            # Plot the 'Pt' column where N_part == n
+            #axs[i].errorbar(mergedData['Pt'][mergedData['N part'] == n], 
+            plt.errorbar(x=self.mergedData['Pt'][self.mergedData['N part'] == n], 
+                         y=self.mergedData['spectrum'][self.mergedData['N part'] == n], 
+                         yerr=self.mergedData['err2'][self.mergedData['N part'] == n], 
+                         fmt='o', color='blue',markersize=5,
+                         label=' spectrum N_part = {}'.format(n),
+             ecolor='green', elinewidth=3, capsize=10)
+
+            plt.scatter(self.mergedData['Pt'][self.mergedData['N part'] == n], 
+                         self.mergedData['predictions'][self.mergedData['N part'] == n], 
+                         color='red', s=10,
+                         label=' predictions N_part = {}'.format(n))  
+           
+            plt.xlabel('X-axis Pt')
+            plt.ylabel('Y-axis Value')
+            plt.title('N_part = {}'.format(n))
+            plt.legend(loc='upper right')
+            #plt.legend(['Data'], loc='upper right')
+            #plt.legend(self.mergedData['spectrum'][self.mergedData['N part'] == n], loc='upper left')
+
+            plt.savefig(self.nameFigImg+'_'+ 'N_part = {}'.format(n) +'_'+'.png')
+
+            plt.clf()
+            #plt.legend(['Data'], loc='upper left')
+
+            #plt.show()
+
+            # Add a legend and axis labels to the subplot
+            """ axs[i].legend()
+            axs[i].set_xlabel('Pt')
+            axs[i].set_ylabel('Value')
+            axs[i].set_title('N_part = {}'.format(n)) """
+
+        # Adjust the spacing between subplots
+        #plt.subplots_adjust(hspace=0.5)
+
+        # Show the plot
+        #plt.savefig(self.nameFigImg)
        
+       
+        
+        
+
+
+        print("end plotting ",self.nameFigImg)
+
+        print('end draws of model')
+   
+
 # Write output to excel 
     def write_to_excel(self):
         # Write predictions , data to Excel file
@@ -370,16 +496,19 @@ class MyParam:
 
         #rmse = np.sqrt (np.average(outputpredicat['SquareErrorForEachPoint']))
         self.rmse = pd.Series(self.rmse)
-        self.rmse = self.rmse.to_frame('rmse')
+        self.rmse = self.rmse.to_frame('RMSE')
         #rmse = pd.DataFrame({'rmse': rmse})
         print('RMSE',self.rmse)
 
         # output is data frame
         #print(outputpredicat.head(10))
         # Write the DataFrames to an Excel file with three sheets
+        self.score = pd.Series(self.score)
+        self.score = self.score.to_frame('Score')
         with pd.ExcelWriter(self.outputFile) as writer:
             self.outputpredicat.to_excel(writer, sheet_name=self.outputSheetName, index=False)
             self.rmse.to_excel(writer, sheet_name='RMSE', index=False)
+            self.score.to_excel(writer, sheet_name='Score', index=False)
 
         print('end write to excel ')
 
@@ -392,6 +521,7 @@ class MyParam:
         with StringIO() as buf:
             self.model.summary(print_fn=lambda x: buf.write(x + '\n'))
             summary = buf.getvalue()
+            summary += '\n score : ' + str(self.score)
         print('end summarize the model')
        
         #with open(self.modelName +'-summary.txt', 'w') as f:
@@ -402,16 +532,17 @@ class MyParam:
         print('summary : ' , self.model.summary())
         print('model name : ',self.modelName)
         # print Root Mean Square Error that computed as Dr Mohamed want using err1&err2
-        print('RMSE',self.rmse['rmse'].values)
+        print('RMSE',self.rmse['RMSE'].values)
         # print("accuracy :" + str(accuracy))
         print("score " + str(self.score))
+        #print("score " + str(self.score))
        
         print('end out model summary')
 
 # Start process
     def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = 'test',_outfolder='out',_inputFolder='data',_sheetName='Sheet1',_epochP=100,_batchSizeP=16):
         # give the file name to class parameters , also Sheet name if don't default is 'Sheet1'
-        self.init_param(_inputfile=_fileNameP,_outfolder=_outfolder,_inputFolder=_inputFolder,sheetName=_sheetName,_epochP=100,_batchSizeP=16) # get current excel sheet (only one in folder)               
+        self.init_param(_inputfile=_fileNameP,_outfolder=_outfolder,_inputFolder=_inputFolder,sheetName=_sheetName,_epochP=_epochP,_batchSizeP=_batchSizeP) # get current excel sheet (only one in folder)               
         # get the data from excel file and save it class parameter
         self.get_data_in_Param()
         # normaliz input
@@ -423,7 +554,8 @@ class MyParam:
         # evaluate model
         self.evaluate_model()
         # darw
-        self.draws_of_model()
+        self.draws_of_model_error_bar2()
+        #self.draws_of_model()
         # write to excel
         self.write_to_excel()
         # print model summery 
