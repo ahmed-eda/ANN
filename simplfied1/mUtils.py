@@ -1,4 +1,5 @@
 # All needed headers lib
+
 # Lib
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -70,7 +71,7 @@ class MyParam:
 # Methods
 
 # Init
-    def init_param(self,_outfolder='out',_inputFolder='data',_inputfile='',sheetName='Sheet1'):
+    def init_param(self,_outfolder='out',_inputFolder='data',_inputfile='',sheetName='Sheet1',_epochP=100,_batchSizeP=16):
         # data parameters
         # Get the current working directory
         cwd = os.getcwd()
@@ -81,6 +82,8 @@ class MyParam:
         
         self.inputSheetName = "Sheet1"        
         # Model parameteres 
+        self.epochs=_epochP
+        self.batch_size =_batchSizeP
         pass
         # Output parameters
         subdir = os.path.join(cwd, _inputFolder)
@@ -156,7 +159,7 @@ class MyParam:
 
 
 # Create model 
-    def creat__new_model(self, _epoch=100,_batchSize=16):
+    def creat__new_model(self):
         # Define the model
         self.model = Sequential(name=self.modelName)
         # Add the first dense layer
@@ -391,7 +394,8 @@ class MyParam:
             summary = buf.getvalue()
         print('end summarize the model')
        
-        with open(self.modelName +'-summary.txt', 'w') as f:
+        #with open(self.modelName +'-summary.txt', 'w') as f:
+        with open(self.summaryOutFile,'w') as f:
             f.write(summary)
 
         print('start print summary')
@@ -405,11 +409,9 @@ class MyParam:
         print('end out model summary')
 
 # Start process
-    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = '',_outfolder='out',_inputFolder='data',_sheetName='Sheet1'):
-        # return parameter class contain only structur to use in app
-        # self.MyParam() 
+    def our_procedure(self,_loadP=True,_fileNameP='',_modelNameP = 'test',_outfolder='out',_inputFolder='data',_sheetName='Sheet1',_epochP=100,_batchSizeP=16):
         # give the file name to class parameters , also Sheet name if don't default is 'Sheet1'
-        self.init_param(_inputfile=_fileNameP,_outfolder=_outfolder,_inputFolder=_inputFolder,sheetName=_sheetName) # get current excel sheet (only one in folder)               
+        self.init_param(_inputfile=_fileNameP,_outfolder=_outfolder,_inputFolder=_inputFolder,sheetName=_sheetName,_epochP=100,_batchSizeP=16) # get current excel sheet (only one in folder)               
         # get the data from excel file and save it class parameter
         self.get_data_in_Param()
         # normaliz input

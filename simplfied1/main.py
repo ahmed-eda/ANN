@@ -1,14 +1,16 @@
+# Call the liberaries that we made or call
 import mUtils as u
 
 
-# start the main function
+# define the main function
 def main():
     print("Starting main call")
 
     p = u.MyParam()
-    p.our_procedure(_modelNameP='mtest.h5',_loadP=False)
+    p.our_procedure(_modelNameP='mtest.h5',_loadP=False,_epochP=50)
     #p.init_param()
     #p.get_data_in_Param()
+
 
     print('out folder', p.outFolder)
     print('inputfile : ',p.inputFile)
@@ -17,6 +19,6 @@ def main():
 
     print("The End of main ")
 
-
+# call the main function
 if __name__ == "__main__":
     main()
