@@ -409,6 +409,8 @@ class MyParam:
 
         # create graph data set  = mergedData
         # to add err 1
+
+        """ 
         dataGraphe1 = pd.merge(xapf['Pt'],xapf['err1'],left_index=True, right_index=True)
         print('datagraph1 : \n',dataGraphe1)
         # to add err 2
@@ -424,11 +426,14 @@ class MyParam:
         # Plot the data and predictions
         self.mergedData = pd.merge(dataGraph12ps,xapf['N part'],left_index=True, right_index=True)
         print('merged data is : \n',self.mergedData)
+        """
 
         # modify upper and lower error values
         #self.mergedData['err1'] = self.mergedData['spectrum'] - self.mergedData['err2']
         #self.mergedData['err2'] = self.mergedData['err2'] + self.mergedData['spectrum']
 
+
+        self.mergedData = xapf.copy()
         yerror = self.mergedData['err2']
         print('yerror : ',yerror.shape)
         error = self.mergedData['err2'] #yerror.to_numpy()
@@ -452,7 +457,7 @@ class MyParam:
                     #Ypredictions_axis = xapf['predictions'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
                     e_axis = all_axis['err2']
                     #e_axis = xapf['err2'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                    g_title = 'N_part = {}'.format(n_part_item) + ' ,mass = {}'.format(mass_item) + ' ,s = {}'.format(s_item)
+                    g_title = 'N_part = {:.0f}'.format(n_part_item) + ' ,mass = {:.6f}'.format(mass_item) + ' ,s = {:.1f}'.format(s_item)
                     
                     
 
@@ -540,6 +545,7 @@ class MyParam:
             self.model.summary(print_fn=lambda x: buf.write(x + '\n'))
             summary = buf.getvalue()
             summary += '\n score : ' + str(self.score)
+            summary += '\n RMSE : ' + str(self.rmse.values)
         print('end summarize the model')
        
         #with open(self.modelName +'-summary.txt', 'w') as f:
