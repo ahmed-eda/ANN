@@ -53,7 +53,7 @@ class MyParam:
     # Get current data excel file name (doesn't start with out* ) 
     def get_input_file_name(self):
         readFolder = self.inputFolder
-        print('os.listdir("readFolder") : ',os.listdir(readFolder))
+        print('os.listdir(".") : ',os.listdir("."))
         excel_files = [
             f for f in os.listdir(readFolder) if f.endswith(".xlsx") and not f.startswith("out")
         ]
@@ -194,12 +194,7 @@ class MyParam:
         #self.mybatchSize = int(32)
         print('my epochs : ',self.myepochs)
         print('my batch size : ',self.mybatchSize)
-        # fit on all data
-        self.model.fit(self.X_train, self.y, epochs=self.myepochs, 
-                        batch_size=self.mybatchSize) 
-        # Set the validation split to 20%.
-        #self.model.fit(self.X_train, self.y, epochs=self.myepochs, 
-        #                batch_size=self.mybatchSize, validation_split=0.2) 
+        self.model.fit(self.X_train, self.y, epochs=self.myepochs, batch_size=self.mybatchSize) 
         print('model after fitting : ',self.model)
         # Save the model
         self.modelNamePath = os.path.join(self.outFolder,self.modelName)
@@ -388,16 +383,9 @@ class MyParam:
         xapf= self.datap.copy(deep=True)
         print('datap = ',self.datap)
         print('xapf : ',xapf)
-        mass_filter = xapf['mass'].unique()[0]
-        s_filter = xapf['s'].unique()[0]
-        print('mass_filetr : ',mass_filter)
-        print('s_filetr : ',s_filter)
-       
-        #xapf = xapf[xapf['mass']== mass_filter] # 0.13957]   #0.493677] #0.13957]
-        #xapf = xapf[xapf['s']== s_filter ] #7.7]
-       
+        xapf = xapf[xapf['mass']== 0.13957]   #0.493677] #0.13957]
+        xapf = xapf[xapf['s']==7.7]
         #xapf = xapf[xapf['N part']==337]
-
         print('xapf modified : ',xapf)
 
         # detinct N Part values
@@ -436,59 +424,53 @@ class MyParam:
         # Create a figure with  subplots
         #fig, axs = plt.subplots(nrows=len(N_Part_Values), ncols=1, figsize=(10, 100))
         
-        for mass_item in xapf['mass'].unique():
-            for s_item in xapf['s'].unique():
-                for n_part_item in xapf['N part'].unique():
-                    print(' mass : ', mass_item)
-                    print(' s : ',s_item)
-                    print(' n part : ', n_part_item)
-                    all_axis =    xapf.loc[(xapf['mass'] == mass_item) & (xapf['s'] == s_item) & (xapf['N part']==n_part_item)]
-                    # filtered_df = df.loc[(df['age'] >= 25) & (df['age'] <= 40) & (df['gender'] == 'female')]
-                    X_axis = all_axis['Pt']
-                    #X_axis = xapf['Pt'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                    Yspectrum_axis = all_axis['spectrum']
-                    #Yspectrum_axis = xapf['spectrum'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                    Ypredictions_axis = all_axis['predictions']
-                    #Ypredictions_axis = xapf['predictions'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                    e_axis = all_axis['err2']
-                    #e_axis = xapf['err2'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                    g_title = 'N_part = {}'.format(n_part_item) + ' ,mass = {}'.format(mass_item) + ' ,s = {}'.format(s_item)
-                    
-                    
+        for i, n in enumerate(N_Part_Values):
+            
 
-                    if Yspectrum_axis.count() > 0:
-                        #print('spectrum : ',Yspectrum_axis)
-                        plt.errorbar(x=X_axis, 
-                             y=Yspectrum_axis, 
-                             yerr=e_axis, 
-                             fmt='o', color='blue',markersize=5,
-                             label=' spectrum N_part = {}'.format(n),
-                             ecolor='green', elinewidth=3, capsize=10)
+            # Plot the 'Pt' column where N_part == n
+            #axs[i].errorbar(mergedData['Pt'][mergedData['N part'] == n], 
+            plt.errorbar(x=self.mergedData['Pt'][self.mergedData['N part'] == n], 
+                         y=self.mergedData['spectrum'][self.mergedData['N part'] == n], 
+                         yerr=self.mergedData['err2'][self.mergedData['N part'] == n], 
+                         fmt='o', color='blue',markersize=5,
+                         label=' spectrum N_part = {}'.format(n),
+             ecolor='green', elinewidth=3, capsize=10)
 
-                        plt.scatter( x=X_axis, 
-                                     y=Ypredictions_axis, 
-                                     color='red', s=10,
-                                     label=' predictions N_part = {}'.format(n))  
+            plt.scatter(self.mergedData['Pt'][self.mergedData['N part'] == n], 
+                         self.mergedData['predictions'][self.mergedData['N part'] == n], 
+                         color='red', s=10,
+                         label=' predictions N_part = {}'.format(n))  
+           
+            plt.xlabel('X-axis Pt')
+            plt.ylabel('Y-axis Value')
+            plt.title('N_part = {}'.format(n))
+            plt.legend(loc='upper right')
+            #plt.legend(['Data'], loc='upper right')
+            #plt.legend(self.mergedData['spectrum'][self.mergedData['N part'] == n], loc='upper left')
 
-                        plt.xlabel('X-axis Pt')
-                        plt.ylabel('Y-axis Value')
-                        plt.title(g_title)
-                        plt.legend(loc='upper right')
-                        #plt.legend(['Data'], loc='upper right')
-                        #plt.legend(self.mergedData['spectrum'][self.mergedData['N part'] == n], loc='upper left')
+            plt.savefig(self.nameFigImg+'_'+ 'N_part = {}'.format(n) +'_'+'.png')
 
-                        plt.savefig(self.nameFigImg+'_'+ g_title +'_'+'.png')
+            plt.clf()
+            #plt.legend(['Data'], loc='upper left')
 
-                        plt.clf()
-                        #plt.legend(['Data'], loc='upper left')
+            #plt.show()
 
-                        #plt.show()
+            # Add a legend and axis labels to the subplot
+            """ axs[i].legend()
+            axs[i].set_xlabel('Pt')
+            axs[i].set_ylabel('Value')
+            axs[i].set_title('N_part = {}'.format(n)) """
 
+        # Adjust the spacing between subplots
+        #plt.subplots_adjust(hspace=0.5)
 
+        # Show the plot
+        #plt.savefig(self.nameFigImg)
+       
+       
+        
+        
 
-                        pass
-                    else:
-                        pass 
 
         print("end plotting ",self.nameFigImg)
 
