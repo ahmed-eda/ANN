@@ -448,6 +448,7 @@ class MyParam:
                     print(' s : ',s_item)
                     print(' n part : ', n_part_item)
                     all_axis =    xapf.loc[(xapf['mass'] == mass_item) & (xapf['s'] == s_item) & (xapf['N part']==n_part_item)]
+                    all_axis = all_axis.sort_values(by='Pt')
                     # filtered_df = df.loc[(df['age'] >= 25) & (df['age'] <= 40) & (df['gender'] == 'female')]
                     X_axis = all_axis['Pt']
                     #X_axis = xapf['Pt'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
@@ -469,14 +470,19 @@ class MyParam:
                              fmt='o', color='blue',markersize=5,
                              label=' spectrum N_part = {}'.format(n),
                              ecolor='green', elinewidth=3, capsize=10)
-
+                        
                         plt.scatter( x=X_axis, 
                                      y=Ypredictions_axis, 
-                                     color='red', s=10,
+                                     color='black', s=5,
                                      label=' predictions N_part = {}'.format(n))  
+                       
+                        plt.plot( X_axis, 
+                                     Ypredictions_axis, 
+                                     color='red',
+                                     label=' predictions N_part = {}'.format(n)) 
 
-                        plt.xlabel('X-axis Pt')
-                        plt.ylabel('Y-axis Value')
+                        plt.xlabel('Pt')
+                        plt.ylabel('Invariant Yield')
                         plt.title(g_title)
                         plt.legend(loc='upper right')
                         #plt.legend(['Data'], loc='upper right')
