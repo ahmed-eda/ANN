@@ -51,6 +51,7 @@ def main():
     data = ''
     X = ''
     y = ''
+    y_ln = ''
     X_train = ''  
     X_train_part = ''
     X_test = ''
@@ -129,7 +130,8 @@ def main():
                     batch_size= mybatchSize)  """
     # Set the validation split to 20%. and shuffel data
     from sklearn.model_selection import train_test_split
-    X_train_part, X_test_part, y_train_part, y_test_part = train_test_split( X_train, y,test_size=0.2,shuffle=True)
+    ###
+    X_train_part, X_test_part, y_train_part, y_test_part = train_test_split( X_train, y_ln,test_size=0.2,shuffle=True)
     
     """ 
      X_train_part =  X_train
@@ -176,8 +178,12 @@ def main():
     predictions = predictions.flatten()
     predictions = pd.Series(predictions)
     predictions = predictions.to_frame('predictions')
-    print("predictions is : ")
+
+    ###
+    predictions = np.exp(predictions)
+    print(" ### predictions is : ")
     print(predictions)
+    #mse = mean_squared_error(y,predictions)
     mse = mean_squared_error(y,predictions)
     print('mse' , mse)       
     print('end predict')   
@@ -380,4 +386,7 @@ def main():
 
 # call the main function
 if __name__ == "__main__":
+    print('mainln.py')
     main()
+    print('mainln.py')
+
