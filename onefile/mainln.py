@@ -343,7 +343,7 @@ def main():
                          yerr=e_axis, 
                          fmt='o', color='blue',markersize=5,
                          label=' spectrum N_part = {}'.format(n),
-                         ecolor='green', elinewidth=3, capsize=10)
+                         ecolor='green', elinewidth=3, capsize=1)
                     """ 
                     plt.scatter( x=X_axis, 
                                  y=Ypredictions_axis, 
