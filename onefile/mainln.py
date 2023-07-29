@@ -72,7 +72,10 @@ def main():
 # Read the data from the excel file in class of parameters
     data_all = pd.read_excel(inputFile, sheet_name=inputSheetName)
     #temp_data_all = data_all  # data_all[data_all['spectrum']<60]
-    data = data_all .reset_index(drop=True)
+    datat = data_all .reset_index(drop=True)
+    # make data sampled to randomized data as dr mohamed told us
+    data = datat.sample(n=datat.count()[0]-1)
+    data = data.reset_index(drop=True)
     # Split the data into input and output variables
     X = data[["mass", "s", "N part", "Pt"]]
     y = data["spectrum"].to_frame("spectrum")
@@ -82,13 +85,23 @@ def main():
     
     print('y_ln -head : \n',y_ln.head)
     #print('y_ln_df -head : \n',y_ln_df)
-
+    print('data_all : \n',data_all)
     print('x head : \n',X.head)
     print('y head : \n',y.head)
     print('data : \n',data)
-    print('data_all : \n',data_all)
-    
+    print ('data count : ',data.count())
+    print('data size : ',data.size)    
     print('end get_data_in_Param')
+    #value = input("Enter a value: ")
+    """    
+    value = input("Enter a value: ")
+    if value == "x":
+        print("u will exit ...")
+        exit()
+        
+    print("You entered:", value)
+    """
+
 # Normaliz input
     # Normalize the input
     from sklearn.preprocessing import RobustScaler
@@ -366,7 +379,6 @@ def main():
     print("end plotting ",nameFigImg)
     print('end draws of model')
 
-
 # summery data to show on screen only
     print('start print summary')
     print('summary : ' , model.summary())
@@ -379,10 +391,8 @@ def main():
     #print("score " + str(score))
     print('end out model summary')
 
-
 # End the main function
     print("The End of main ")
-
 
 # call the main function
 if __name__ == "__main__":
