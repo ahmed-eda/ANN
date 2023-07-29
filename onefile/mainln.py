@@ -342,7 +342,7 @@ def main():
                          y=Yspectrum_axis, 
                          yerr=e_axis, 
                          fmt='o', color='blue',markersize=5,
-                         label=' spectrum N_part = {}'.format(n),
+                         label=' spectrum N_part = {}'.format(n_part_item),
                          ecolor='green', elinewidth=3, capsize=1)
                     """ 
                     plt.scatter( x=X_axis, 
@@ -353,7 +353,7 @@ def main():
                     plt.plot( X_axis, 
                                  Ypredictions_axis, 
                                  color='red',
-                                 label=' predictions N_part = {}'.format(n)) 
+                                 label=' predictions N_part = {}'.format(n_part_item)) 
                     max_s_p = int(max(max(Ypredictions_axis),max(Yspectrum_axis)))
                     y_scale = int(max(e_axis))                       
                     plt.xlim(left=0,right = int(max(X_axis)+0.1))
