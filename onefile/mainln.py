@@ -29,9 +29,9 @@ def main():
     current_input_excel_file = excel_files[0]
     inputFile = os.path.join(inputFolder,current_input_excel_file)#'inputdata.xlsx')
     inputSheetName = "Sheet1"
-    myepochs = 100
+    myepochs = 150
     mybatchSize = 32
-    modelName = 'testmodel.h5'
+    modelName = 'testmodel.epoch.'+ str(myepochs) +'.h5'
     model = None    
     outFolder = os.path.join(cwd,'out')#cwd
     # calculated  parameters
@@ -204,6 +204,7 @@ def main():
 # Write output to excel 
     
     # merge date[] with predictions
+    data['serr'] = data['err1']+data['err2']
     print('shape of datap',datap.shape)
     print('shape of predictions',predictions.shape)
     if(datap.empty):
@@ -228,17 +229,18 @@ def main():
     #rmse = np.sqrt (np.average(outputpredicat['SquareErrorForEachPoint']))
     rmseX = pd.Series(rmse)
     rmseX = rmseX.to_frame('RMSE')
+    rmseX['myepochs'] = myepochs
+    rmseX['Score'] = score
     #rmse = pd.DataFrame({'rmse': rmse})
     print('RMSE',rmseX)
     # output is data frame
     #print(outputpredicat.head(10))
-    # Write the DataFrames to an Excel file with three sheets
-    scoreX = pd.Series(score)
-    scoreX = scoreX.to_frame('Score')
+    # Write the DataFrames to an Excel file with three sheets 
+
     with pd.ExcelWriter(outputFile) as writer:
         outputpredicat.to_excel(writer, sheet_name=outputSheetName, index=False)
         rmseX.to_excel(writer, sheet_name='RMSE', index=False)
-        scoreX.to_excel(writer, sheet_name='Score', index=False)
+        
     print('end write to excel ')
 
 # Print model summery 
@@ -251,6 +253,7 @@ def main():
         summary = buf.getvalue()
         summary += '\n score : ' + str(score)
         summary += '\n RMSE : ' + str(rmse)
+        summary += '\n myepochs : '+ str(myepochs)
         #summary += '\n RMSE : ' + str(rmse.values)
     print('end summarize the model')       
     #with open(modelName +'-summary.txt', 'w') as f:
@@ -264,6 +267,7 @@ def main():
     print('RMSE',rmse)
     # print("accuracy :" + str(accuracy))
     print("score " + str(score))
+    print('myepochs '+ str(myepochs))
     #print("score " + str(score))
     print('end out model summary')
 
@@ -284,6 +288,8 @@ def main():
     #datap =pd.DataFrame(datap) # pd.DataFrame(datape12)# pd.DataFrame(datap)
     # xapf : datap after filteration
     xapf= datap.copy(deep=True)
+    xapf['serr'] = xapf['err1']+ xapf['err2']
+    print('xapf after serr', xapf)
     print('datap = ',datap)
     print('xapf : ',xapf)
     mass_filter = xapf['mass'].unique()[0]
@@ -301,10 +307,10 @@ def main():
         print('N is : ',n)
     print('Npart values : \n',N_Part_Values)    
     mergedData = xapf.copy()
-    yerror = mergedData['err2']
-    print('yerror : ',yerror.shape)
-    error = mergedData['err2'] #yerror.to_numpy()
-    print('error : ',error.shape)
+    #yerror = mergedData['err2']
+    #print('yerror : ',yerror.shape)
+    #error = mergedData['err2'] #yerror.to_numpy()
+    #print('error : ',error.shape)
     # Create a figure with  subplots
     #fig, axs = plt.subplots(nrows=len(N_Part_Values), ncols=1, figsize=(10, 100))
     for mass_item in xapf['mass'].unique():
@@ -322,18 +328,23 @@ def main():
                 #Yspectrum_axis = xapf['spectrum'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
                 Ypredictions_axis = all_axis['predictions']
                 #Ypredictions_axis = xapf['predictions'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
-                e_axis = all_axis['err2']
+                e_axis = all_axis['serr']
                 #e_axis = xapf['err2'][xapf['mass']==mass_item][xapf[xapf['s']== s_item]][xapf['N part']==n_part_item]
                 g_title = 'N_part = {:.0f}'.format(n_part_item) + ' ,mass = {:.6f}'.format(mass_item) + ' ,s = {:.1f}'.format(s_item)
-                
+                gf_title = 'N_part = {:.0f}'.format(n_part_item) + ' ,mass = {:.6f}'.format(mass_item) + ' ,s = {:.1f}'.format(s_item)
                 
                 g_title += ' ' + ' score is  ' + '{:.3f}'.format(score)
+                gf_title += '\n ' + ' score is  ' + '{:.3f}'.format(score)
                 if(datap.empty):
                     #g_title += ' ' + ' RMSE  is  ' + '{:.3f}'.format(rmse.values[1])
                     pass
                 else:
                     g_title += ' ' + ' RMSE  is  ' + '{:.3f}'.format(rmse)
+                    gf_title += ' ' + ' RMSE  is  ' + '{:.3f}'.format(rmse)
                     pass
+
+                g_title += ' myepochs '+ str(myepochs)
+                gf_title += ' '+' myepochs '+ str(myepochs)
                 
                 if Yspectrum_axis.count() > 0:
                     #print('spectrum : ',Yspectrum_axis)
@@ -342,7 +353,7 @@ def main():
                          y=Yspectrum_axis, 
                          yerr=e_axis, 
                          fmt='o', color='blue',markersize=5,
-                         label=' spectrum N_part = {}'.format(n_part_item),
+                         label=' spectrum ', #N_part = {}'.format(n_part_item),
                          ecolor='green', elinewidth=3, capsize=1)
                     """ 
                     plt.scatter( x=X_axis, 
@@ -353,7 +364,7 @@ def main():
                     plt.plot( X_axis, 
                                  Ypredictions_axis, 
                                  color='red',
-                                 label=' predictions N_part = {}'.format(n_part_item)) 
+                                 label=' predictions ') # N_part = {}'.format(n_part_item)) 
                     max_s_p = int(max(max(Ypredictions_axis),max(Yspectrum_axis)))
                     y_scale = int(max(e_axis))                       
                     plt.xlim(left=0,right = int(max(X_axis)+0.1))
@@ -365,7 +376,7 @@ def main():
                     plt.xticks(xticks)
                     plt.xlabel('Pt(GEV/C)')
                     plt.ylabel('Invariant Yield (GEV/C)^-2')
-                    plt.title(g_title)
+                    plt.title(gf_title)
                     plt.legend(loc='upper right')
                     #plt.legend(['Data'], loc='upper right')
                     #plt.legend(mergedData['spectrum'][mergedData['N part'] == n], loc='upper left')
@@ -388,7 +399,7 @@ def main():
     print('RMSE',rmse)
     # print("accuracy :" + str(accuracy))
     print("score " + str(score))
-    #print("score " + str(score))
+    print("myepochs " + str(myepochs))
     print('end out model summary')
 
 # End the main function
