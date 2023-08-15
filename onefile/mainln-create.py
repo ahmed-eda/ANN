@@ -71,6 +71,13 @@ def main():
     print("Starting main call")
 # Read the data from the excel file in class of parameters
     data_all = pd.read_excel(inputFile, sheet_name=inputSheetName)
+
+    # at each distinct value of mass,s,N part remove the first three min value of Pt
+    filtered_data = data_all.groupby(['mass', 's', 'N part']).apply(lambda x: x.nsmallest(3, 'Pt')).reset_index(drop=True)
+    data_all = data_all.drop(filtered_data.index)
+    
+    datat = data_all .reset_index(drop=True)
+
     #temp_data_all = data_all  # data_all[data_all['spectrum']<60]
     datat = data_all .reset_index(drop=True)
     # make data sampled to randomized data as dr mohamed told us
@@ -93,14 +100,14 @@ def main():
     print('data size : ',data.size)    
     print('end get_data_in_Param')
     #value = input("Enter a value: ")
-    """    
-    value = input("Enter a value: ")
+       
+    """value = input("Enter a value: ")
     if value == "x":
         print("u will exit ...")
         exit()
         
-    print("You entered:", value)
-    """
+    print("You entered:", value) """
+   
 
 # Normaliz input
     # Normalize the input

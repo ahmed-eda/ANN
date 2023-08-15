@@ -1,0 +1,27 @@
+Model: "testmodel.epoch.150.h5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 40)                200       
+                                                                 
+ dense_1 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_2 (Dense)             (None, 80)                3280      
+                                                                 
+ dense_3 (Dense)             (None, 80)                6480      
+                                                                 
+ dense_4 (Dense)             (None, 40)                3240      
+                                                                 
+ dense_5 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_6 (Dense)             (None, 1)                 41        
+                                                                 
+=================================================================
+Total params: 16521 (64.54 KB)
+Trainable params: 16521 (64.54 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+
+ score : 0.08978907018899918
+ RMSE : 3.8819493861821948
+ myepochs : 150

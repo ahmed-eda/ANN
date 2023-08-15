@@ -29,7 +29,7 @@ def main():
     current_input_excel_file = excel_files[0]
     inputFile = os.path.join(inputFolder,current_input_excel_file)#'inputdata.xlsx')
     inputSheetName = "Sheet1"
-    myepochs = 150
+    myepochs = 50
     mybatchSize = 32
     modelName = 'testmodel.epoch.'+ str(myepochs) +'.h5'
     model = None    
@@ -71,8 +71,13 @@ def main():
     print("Starting main call")
 # Read the data from the excel file in class of parameters
     data_all = pd.read_excel(inputFile, sheet_name=inputSheetName)
-    #temp_data_all = data_all  # data_all[data_all['spectrum']<60]
+    
+    # at each distinct value of mass,s,N part remove the first three min value of Pt
+    filtered_data = data_all.groupby(['mass', 's', 'N part']).apply(lambda x: x.nsmallest(3, 'Pt')).reset_index(drop=True)
+    #data_all = filtered_data
+    
     datat = data_all .reset_index(drop=True)
+
     # make data sampled to randomized data as dr mohamed told us
     data = datat.sample(n=datat.count()[0]-1)
     data = data.reset_index(drop=True)
