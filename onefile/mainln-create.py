@@ -161,15 +161,7 @@ def main():
     # model.save(os.path.join( outFolder, modelName)) 
     print('end create model')
 
-# load model   is commented when creating the models 
-    """   
-    # load the selected model
-    modelNamePath = os.path.join(inputFolder,modelName)
-    model = load_model(modelNamePath)        
-    #model = load_model(modelName)        
-    print('model is loaded : ',model)
 
-    """
  
 # Evalute the model
     # Evalute the model

@@ -114,62 +114,16 @@ def main():
     print(X_normalized)
     X_train = X_normalized
     print('end normaliz_data')        
-# Creat model : is commented when load model
-    
-    # Define the model
-    model = Sequential(name= modelName)
-    print('create_new_model : modelname \n', modelName)
-    # Add the first dense layer
-    model.add(Dense(40, input_dim=4, activation='relu'))
-    # Add batch normalization
-    #model.add(BatchNormalization())
-    model.add(Dense(40, activation='relu'))
-    #model.add(BatchNormalization())
-    model.add(Dense(80, activation='relu'))
-    model.add(Dense(80, activation='relu'))
-    model.add(Dense(40, activation='relu'))
-    model.add(Dense(40, activation='relu'))
-    # Add the output layer
-    model.add(Dense(1))
-    ''' # compile the model      '''
-    # Compile the model with Levenberg-Marquardt optimizer
-    optimizer = RMSprop(learning_rate=0.001, rho=0.001,)
-    model.compile(loss='mean_squared_error', optimizer=optimizer)
-    print('after compiling model : model is: ', model)
-    print('my epochs : ', myepochs)
-    print('my batch size : ', mybatchSize)
-    # fit on all data
-    """  model.fit( X_train,  y, epochs= myepochs, 
-                    batch_size= mybatchSize)  """
-    # Set the validation split to 20%. and shuffel data
-    from sklearn.model_selection import train_test_split
-    ###
-    X_train_part, X_test_part, y_train_part, y_test_part = train_test_split( X_train, y_ln,test_size=0.2,shuffle=True)
-    
-    """ 
-     X_train_part =  X_train
-     X_test_part =  X_train
-     y_train_part =  y
-     y_test_part =  y
-    """
-    model.fit( X_train_part,  y_train_part, epochs= myepochs, 
-                    batch_size= mybatchSize, validation_split=0.2) 
-    print('model after fitting : ', model)
-    # Save the model
-    modelNamePath = os.path.join( outFolder, modelName)
-    model.save( modelNamePath) 
-    # model.save(os.path.join( outFolder, modelName)) 
-    print('end create model')
 
 # load model   is commented when creating the models 
-    """   
+       
     # load the selected model
     modelNamePath = os.path.join(inputFolder,modelName)
     model = load_model(modelNamePath)        
     #model = load_model(modelName)        
     print('model is loaded : ',model)
 
-    """
+    
  
 # Evalute the model
     # Evalute the model
