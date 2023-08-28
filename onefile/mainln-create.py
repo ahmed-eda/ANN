@@ -13,6 +13,7 @@ def main():
     from sklearn.preprocessing import RobustScaler
     from sklearn.metrics import mean_squared_error
     from io import StringIO
+    import tensorflow as tf
 
 # define the parameter
     # define the current working directory
@@ -29,7 +30,7 @@ def main():
     current_input_excel_file = excel_files[0]
     inputFile = os.path.join(inputFolder,current_input_excel_file)#'inputdata.xlsx')
     inputSheetName = "Sheet1"
-    myepochs = 150
+    myepochs = 200
     mybatchSize = 32
     modelName = 'testmodel.epoch.'+ str(myepochs) +'.h5'
     model = None    
@@ -139,9 +140,32 @@ def main():
     # Add the output layer
     model.add(Dense(1))
     ''' # compile the model      '''
+    
+    # define customized loss function 
+    from keras import backend as BK
+    def my_custom_loss(y_true, y_pred,data_for_lossfunction):
+        y_pred = tf.cast(y_pred, tf.float64) # cast y_pred to float64
+        y_true = tf.cast(y_true, tf.float64)
+        # here write customized loss function
+        diff = BK.square(y_true - y_pred)
+        errorbar = data_for_lossfunction['err2'] + data_for_lossfunction['err1']
+        # Divide the squared difference by the error bars
+        ratio = diff / BK.square(errorbar)
+        # Sum the squared ratios
+        loss = BK.sum(ratio)
+        return loss
+
     # Compile the model with Levenberg-Marquardt optimizer
     optimizer = RMSprop(learning_rate=0.001, rho=0.001,)
-    model.compile(loss='mean_squared_error', optimizer=optimizer)
+    # use customized loss function   
+    # Compile the model with the custom loss function and the data as an argument
+    data_for_lossfunction = data
+    print('dada_for_lossfunction : ', data_for_lossfunction)
+    print('press key to continue')
+    #  wait press key to continue
+    #input()
+    model.compile(loss=lambda y_true, y_pred: my_custom_loss(y_true, y_pred, data_for_lossfunction), optimizer='adam')    
+    # model.compile(loss='mean_squared_error', optimizer=optimizer)
     print('after compiling model : model is: ', model)
     print('my epochs : ', myepochs)
     print('my batch size : ', mybatchSize)
