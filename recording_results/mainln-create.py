@@ -193,11 +193,17 @@ def main():
                     batch_size= mybatchSize, validation_split=0.2) 
     print('model after fitting : ', model)
     # Save the model
-    modelNamePath = os.path.join( outFolder, modelName)
+    modelNamePath = os.path.join( outFolder, modelName)    
+    # Save the model 
     model.save( modelNamePath) 
     # model.save(os.path.join( outFolder, modelName)) 
     print('end create model')
-
+    # Draw the model
+    from keras.utils.vis_utils import plot_model
+    # Plot the model with custom arguments
+    modelNameFig = modelNamePath+".png"
+    plot_model(model, to_file=modelNameFig, show_shapes=True, rankdir='LR')
+    value = input("Enter a value: ")
 
  
 # Evalute the model
