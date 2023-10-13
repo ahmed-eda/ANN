@@ -199,11 +199,15 @@ def main():
     # model.save(os.path.join( outFolder, modelName)) 
     print('end create model')
     # Draw the model
-    from keras.utils.vis_utils import plot_model
+    # from keras.utils.vis_utils import plot_model
     # Plot the model with custom arguments
     modelNameFig = modelNamePath+".png"
-    plot_model(model, to_file=modelNameFig, show_shapes=True, rankdir='LR')
-    value = input("Enter a value: ")
+    from keras.utils import plot_model
+    import pydot
+    plot_model(model,to_file=modelNameFig,show_dtype=True,show_shapes=True,expand_nested=True,show_layer_activations=True,show_trainable=True)   
+    #plot_model(model, to_file=modelNameFig, show_shapes=True, rankdir='LR')
+    #tf.keras.utils.plot_model(model, to_file=modelNameFig, show_shapes=True)
+    #value = input("Enter a value: ")
 
  
 # Evalute the model

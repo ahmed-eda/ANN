@@ -1,0 +1,39 @@
+Model: "negative_particles.xlsx.epoch.30.h5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 40)                200       
+                                                                 
+ dense_1 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_2 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_3 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_4 (Dense)             (None, 80)                3280      
+                                                                 
+ dense_5 (Dense)             (None, 80)                6480      
+                                                                 
+ dense_6 (Dense)             (None, 40)                3240      
+                                                                 
+ dense_7 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_8 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_9 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_10 (Dense)            (None, 1)                 41        
+                                                                 
+=================================================================
+Total params: 23081 (90.16 KB)
+Trainable params: 23081 (90.16 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+
+ score : 721066688.0
+ RMSE : 1.028242131622774
+ custom_loss_value : 721066688.0
+ formatted_datetime : 2023-10-14 00:27:01
+ modelName : negative_particles.xlsx.epoch.30.h5
+ mybatchSize : 32
+ myepochs : 30
