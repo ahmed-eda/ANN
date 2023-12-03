@@ -31,7 +31,7 @@ def main():
     current_input_excel_file = excel_files[0]
     inputFile = os.path.join(inputFolder,current_input_excel_file)#'inputdata.xlsx')
     inputSheetName = "Sheet1"
-    myepochs = 30
+    myepochs = 50
     mybatchSize = 32
     modelName = current_input_excel_file + '.epoch.' + str(myepochs) +'.h5' #'testmodel.epoch.'+ str(myepochs) +'.h5'
     model = None    
@@ -159,6 +159,14 @@ def main():
         ratio = diff / BK.square(errorbar)
         # Sum the squared ratios
         loss = BK.sum(ratio)
+        # divide on the number of data
+        loss /= tf.cast(tf.shape(y_true)[0], tf.float64)
+        # divide the loss by 2
+        loss /= 2
+        # clac the square root
+        loss = BK.sqrt(loss)
+        
+        # return the loss : the root mean square error
         return loss
 
     # Compile the model with Levenberg-Marquardt optimizer
@@ -276,7 +284,10 @@ def main():
     outputpredicat = pd.concat([datap, SquareErrorForEachPoint], axis=1)
     mysum =outputpredicat['SquareErrorForEachPoint'].sum()
     mycount =(outputpredicat['SquareErrorForEachPoint'].count()) -1
-    rmse = np.sqrt(mysum/mycount)
+    rmse = mysum/mycount
+    rmse /=2
+    rmse = np.sqrt(rmse)
+    #rmse = np.sqrt(mysum/mycount)
     #rmse = np.sqrt (np.average(outputpredicat['SquareErrorForEachPoint']))
     rmseX = pd.Series(rmse)
     rmseX = rmseX.to_frame('RMSE')
