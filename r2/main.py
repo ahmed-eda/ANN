@@ -1,7 +1,44 @@
 # onefile 
+# Lib
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+from keras.models import Sequential
+from keras.layers import Dense, BatchNormalization
+from keras.optimizers import RMSprop
+from keras.models import load_model
+from sklearn.preprocessing import RobustScaler
+from sklearn.metrics import mean_squared_error
+from datetime import datetime
+from io import StringIO
+import tensorflow as tf
+import openpyxl
+
+# define append data frame to existing excel file
+def append_df_to_excel(writer, df, sheet_name='Sheet1', startrow=None, **to_excel_kwargs):
+    """
+    Append a DataFrame to an existing Excel file.
+    """
+    from openpyxl.utils.dataframe import dataframe_to_rows
+    
+    # Default startrow value
+    if startrow is None and sheet_name in writer.sheets:
+        startrow = writer.sheets[sheet_name].max_row
+    
+    # Convert DataFrame to rows
+    rows = list(dataframe_to_rows(df, index=False, header=False))
+    
+    # Append rows to the sheet
+    sheet = writer.sheets[sheet_name]
+    for row in rows:
+        sheet.append(row)
+
+
+
 # define the main function
 def main():
-# Lib
+    # Lib
     import pandas as pd
     import matplotlib.pyplot as plt
     import numpy as np
@@ -15,6 +52,8 @@ def main():
     from datetime import datetime
     from io import StringIO
     import tensorflow as tf
+    import openpyxl
+ 
 
 # Start the 2 loops
  
@@ -26,6 +65,12 @@ def main():
     LayerLoopEnd = 11 # ending layers value
     LayerLoopStep = 1 # step of layers
     layersNum = LayerLoopStart # starting layers value
+    # to collect all data in one excel sheet
+    from datetime import datetime               
+    fDateTime = datetime.now().strftime("%Y-%m-%d _ %H_%M_%S_")
+    alloutputFile = 'out\\' +'out_All_' + fDateTime +' .xlsx'
+    # add out path
+    alloutputFile = os.path.join( os.getcwd(), alloutputFile)
  # end data 
 
 
@@ -70,12 +115,16 @@ def main():
             # calculated  parameters
             modelNamePath = os.path.join(inputFolder, modelName)      
             outputFile = 'out_' + modelName+' .xlsx'
+            #from datetime import datetime               
+            #fDateTime = datetime.now().strftime("%Y-%m-%d %H-%M-%S-")
+            #alloutputFile = 'out_All_' + fDateTime +' .xlsx'
             summaryOutFile =  modelName + ' _ Summary .txt'
             outputSheetName = 'predicat_ '+ modelName+' '
             nameFigImg = 'fig_Sep_ '+ modelName+' .png'
             nameAllFigImg = 'fig_All_ '+ modelName+' .png'
             # add out path
             outputFile = os.path.join( outFolder, outputFile)
+            #alloutputFile = os.path.join( cwd, alloutputFile)
             summaryOutFile = os.path.join( outFolder, summaryOutFile)
             nameFigImg = os.path.join( outFolder, nameFigImg)
             nameAllFigImg = os.path.join( outFolder, nameAllFigImg)
@@ -359,6 +408,7 @@ def main():
             rmseX = pd.Series(rmse)
             rmseX = rmseX.to_frame('RMSE')
             rmseX['myepochs'] = myepochs
+            rmseX['layersNum'] = layersNum
             rmseX['Score'] = score
             rmseX['mybatchSize'] = mybatchSize
             rmseX['custom_loss_value'] = custom_loss_value
@@ -369,7 +419,7 @@ def main():
             current_datetime = datetime.now()    
             # Print the current date and time
             print("Current Date and Time:", current_datetime)
-            formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+            formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")            
             print("Formatted Date and Time:", formatted_datetime)
             rmseX['currentDateTime'] = current_datetime
             rmseX['formatted_datetime'] = formatted_datetime
@@ -383,6 +433,44 @@ def main():
             with pd.ExcelWriter(outputFile) as writer:
                 outputpredicat.to_excel(writer, sheet_name=outputSheetName, index=False)
                 rmseX.to_excel(writer, sheet_name='RMSE', index=False)
+            # append rmseX to fixed excel file
+            #with pd.ExcelWriter(alloutputFile,mode='a') as writer:
+            #    rmseX.to_excel(writer, sheet_name='RMSE', index=False)
+           
+            # append rmseX to fixed excel file
+            # start here
+            import openpyxl
+            from openpyxl.utils.dataframe import dataframe_to_rows
+            
+            # Check if the file exists
+            if not os.path.isfile(alloutputFile):
+                # Create a new Excel file and write the DataFrame
+                rmseX.to_excel(alloutputFile, sheet_name='RMSE', index=False)
+            else:
+                # Append the DataFrame to the existing Excel file
+                workbook = openpyxl.load_workbook(alloutputFile)
+                
+                # Select the 'RMSE' sheet or create it if it doesn't exist
+                sheet_name = 'RMSE'
+                if sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                else:
+                    sheet = workbook.create_sheet(sheet_name)
+                
+                # Append the DataFrame to the sheet
+                rows = dataframe_to_rows(rmseX, index=False, header=False)
+                for row in rows:
+                    sheet.append(row)
+                
+                # Save the changes to the Excel file
+                workbook.save(alloutputFile)
+           
+
+            # end append to fixed excel sheet
+
+           
+
+
 
             print('end write to excel ')
             #input('press key to continue')
