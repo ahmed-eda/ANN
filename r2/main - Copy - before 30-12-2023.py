@@ -15,6 +15,27 @@ from io import StringIO
 import tensorflow as tf
 import openpyxl
 
+# define append data frame to existing excel file
+def append_df_to_excel(writer, df, sheet_name='Sheet1', startrow=None, **to_excel_kwargs):
+    """
+    Append a DataFrame to an existing Excel file.
+    """
+    from openpyxl.utils.dataframe import dataframe_to_rows
+    
+    # Default startrow value
+    if startrow is None and sheet_name in writer.sheets:
+        startrow = writer.sheets[sheet_name].max_row
+    
+    # Convert DataFrame to rows
+    rows = list(dataframe_to_rows(df, index=False, header=False))
+    
+    # Append rows to the sheet
+    sheet = writer.sheets[sheet_name]
+    for row in rows:
+        sheet.append(row)
+
+
+
 # define the main function
 def main():
     # Lib
@@ -110,7 +131,24 @@ def main():
             print(' out folder : ',outFolder)
             print(' out modelName : ',modelName)
             print(' out nameAllFigImg : ',nameAllFigImg)
-            
+            """     myepochs = 50
+            mybatchSize = 32
+            modelName = current_input_excel_file + '.epoch.' + str(myepochs) +'.h5' #'testmodel.epoch.'+ str(myepochs) +'.h5'
+            model = None    
+            outFolder = os.path.join(cwd,'out')#cwd
+            # calculated  parameters
+            modelNamePath = os.path.join(inputFolder, modelName)      
+            outputFile = 'out_ '+ modelName+' .xlsx'
+            summaryOutFile =  modelName + ' _ Summary .txt'
+            outputSheetName = 'predicat_ '+ modelName+' '
+            nameFigImg = 'fig_Sep_ '+ modelName+' .png'
+            nameAllFigImg = 'fig_All_ '+ modelName+' .png'
+            # add out path
+            outputFile = os.path.join( outFolder, outputFile)
+            summaryOutFile = os.path.join( outFolder, summaryOutFile)
+            nameFigImg = os.path.join( outFolder, nameFigImg)
+            nameAllFigImg = os.path.join( outFolder, nameAllFigImg)
+            """
     # ending data will be changed at looping
 
 # data will be calculated
@@ -223,14 +261,12 @@ def main():
 
             # define customized loss function 
             from keras import backend as BK
-# define customized loss function with data as an argument
             def my_custom_loss(y_true, y_pred,data_for_lossfunction):
                 y_pred = tf.cast(y_pred, tf.float64) # cast y_pred to float64
                 y_true = tf.cast(y_true, tf.float64)
                 # here write customized loss function
                 diff = BK.square(y_true - y_pred)
                 errorbar = data_for_lossfunction['err2'] + data_for_lossfunction['err1']
-                errorbar = np.log(errorbar)
                 # Divide the squared difference by the error bars
                 ratio = diff / BK.square(errorbar)
                 # Sum the squared ratios
@@ -354,14 +390,10 @@ def main():
                 pass
             print('shape of datap after if',datap.shape)
             # Write predictions , data to Excel file
-# calculate rmse at excel sheet
             err1=data['err1'].to_frame('err1')
             err2=data['err2'].to_frame('err2')
             #SquareErrorForEachPoint = np.sqrt( ((datap['predictions']- datap['Spectrum'])/(err1- err2)))
-            excelLnErrorbar =    (err1['err1']+ err2['err2'])
-            # errorbar = np.log(errorbar)
-            excelLnErrorbar = np.log(excelLnErrorbar)
-            SquareErrorForEachPoint =np.square( (datap['predictions']- datap['spectrum'])/(excelLnErrorbar))
+            SquareErrorForEachPoint =np.square( (datap['predictions']- datap['spectrum'])/(err1['err1']+ err2['err2']))
             SquareErrorForEachPoint = pd.Series(SquareErrorForEachPoint)
             SquareErrorForEachPoint = SquareErrorForEachPoint.to_frame('SquareErrorForEachPoint')
             print('Square error for each point : ',SquareErrorForEachPoint)
