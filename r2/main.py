@@ -140,9 +140,9 @@ def main():
 # Read the data from the excel file in class of parameters
             data_all = pd.read_excel(inputFile, sheet_name=inputSheetName)
 
-            # at each distinct value of mass,s,N part remove the first three min value of Pt
-            filtered_data = data_all.groupby(['mass', 's', 'N part']).apply(lambda x: x.nsmallest(3, 'Pt')).reset_index(drop=True)
-            data_all = data_all.drop(filtered_data.index)
+# at each distinct value of mass,s,N part remove the first three min value of Pt
+            #filtered_data = data_all.groupby(['mass', 's', 'N part']).apply(lambda x: x.nsmallest(3, 'Pt')).reset_index(drop=True)
+            #data_all = data_all.drop(filtered_data.index)
 
             datat = data_all .reset_index(drop=True)
 
