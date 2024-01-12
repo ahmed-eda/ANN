@@ -38,12 +38,17 @@ def main():
  
 #   data to control looping
     ELstart = 50#130#20 # starting epochs value
-    ELend = 550  # ending epochs value
+    ELend = 501  # ending epochs value
     ELstep = 50 # step of epochs
-    LayerLoopStart = 5 #9 #1 # starting layers value
-    LayerLoopEnd = 31 # ending layers value
-    LayerLoopStep = 5 # step of layers
+    LayerLoopStart = 7 #9 #1 # starting layers value
+    LayerLoopEnd = 16 # ending layers value
+    LayerLoopStep = 1 # step of layers
     layersNum = LayerLoopStart # starting layers value
+
+    mybatchSize = 32
+    my_learning_rate = 0.001 #2e-5 #0.000000001 
+            
+
     # to collect all data in one excel sheet
     from datetime import datetime               
     fDateTime = datetime.now().strftime("%Y-%m-%d _ %H_%M_%S_")
@@ -86,7 +91,6 @@ def main():
             print('i : ',i)
             print('myepochs : ',myepochs)
             #myepochs = 50
-            mybatchSize = 32
             modelName = current_input_excel_file + '.layers.'+ str(layersNum) + '.epoch.' + str(myepochs)  +'.h5' #'testmodel.epoch.'+ str(myepochs) +'.h5'
             model = None    
             myOut = 'out\\' + 'num_layers_' +str(layersNum)+ '\\num_epochs_' + str(myepochs) + '_'
@@ -199,7 +203,7 @@ def main():
             print('create_new_model : modelname \n', modelName)
             # Add the first dense layer
             model.add(Dense(40, input_dim=4, activation='relu'))
-
+        
             # add the looped hidden layers
             for i in range(layersNum):
                 model.add(Dense(40, activation='relu'))            
@@ -247,7 +251,7 @@ def main():
                 return loss
 
             # Compile the model with Levenberg-Marquardt optimizer
-            optimizer = RMSprop(learning_rate=0.001, rho=0.001,)
+            optimizer = RMSprop(learning_rate=my_learning_rate, rho=0.001,)
             # use customized loss function   
             # Compile the model with the custom loss function and the data as an argument
             data_for_lossfunction = data
@@ -377,6 +381,7 @@ def main():
             rmseX = pd.Series(rmse)
             rmseX = rmseX.to_frame('RMSE')
             rmseX['myepochs'] = myepochs
+            rmseX['learning_rate'] = my_learning_rate
             rmseX['layersNum'] = layersNum
             rmseX['Score'] = score
             rmseX['mybatchSize'] = mybatchSize
@@ -454,6 +459,7 @@ def main():
                 summary = buf.getvalue()
                 summary += '\n score : ' + str(score)
                 summary += '\n RMSE : ' + str(rmse)
+                summary += '\n learningRate : ' + str(my_learning_rate)
                 summary += '\n custom_loss_value : '+ str(custom_loss_value)
                 summary += '\n formatted_datetime : '+ str(formatted_datetime)
                 summary += '\n modelName : '+ str(modelName)
@@ -477,7 +483,8 @@ def main():
             print('end out model summary')
             #input('press key to continue')
 
-    # Draw     
+ 
+# Draw     
             # draw model_error_bar2
             # def draws_of_model_error_bar2:
             #  
@@ -519,6 +526,8 @@ def main():
             #print('error : ',error.shape)
             # Create a figure with  subplots
             #fig, axs = plt.subplots(nrows=len(N_Part_Values), ncols=1, figsize=(10, 100))
+
+            """  
             for mass_item in xapf['mass'].unique():
                 for s_item in xapf['s'].unique():
                     for n_part_item in xapf['N part'].unique():
@@ -552,6 +561,10 @@ def main():
                         g_title += ' myepochs '+ str(myepochs)
                         gf_title += ' '+' myepochs '+ str(myepochs)
 
+                        g_title += ' my_learning_rate '+ str(my_learning_rate)
+                        gf_title += ' '+' my_learning_rate '+ str(my_learning_rate)
+
+
                         if Yspectrum_axis.count() > 0:
                             #print('spectrum : ',Yspectrum_axis)
 
@@ -561,12 +574,12 @@ def main():
                                  fmt='o', color='blue',markersize=5,
                                  label=' spectrum ', #N_part = {}'.format(n_part_item),
                                  ecolor='green', elinewidth=3, capsize=1)
-                            """ 
-                            plt.scatter( x=X_axis, 
-                                         y=Ypredictions_axis, 
-                                         color='black', s=5,
-                                         label=' predictions N_part = {}'.format(n))  
-                            """
+                            
+                            # plt.scatter( x=X_axis, 
+                            #              y=Ypredictions_axis, 
+                            #              color='black', s=5,
+                            #              label=' predictions N_part = {}'.format(n))  
+                           
                             plt.plot( X_axis, 
                                          Ypredictions_axis, 
                                          color='red',
@@ -586,19 +599,26 @@ def main():
                             plt.legend(loc='upper right')
                             #plt.legend(['Data'], loc='upper right')
                             #plt.legend(mergedData['spectrum'][mergedData['N part'] == n], loc='upper left')
+
+
+                            # save the graph to the file
                             plt.savefig(nameFigImg+'_'+ g_title +'_'+'.png')
                             plt.clf()
+                            
                             #plt.legend(['Data'], loc='upper left')
                             #plt.show()
                             pass
                         else:
                             pass 
+            """
             print("end plotting ",nameFigImg)
             print('end draws of model')
             #input("Press Enter to continue...")
 
-    # summery data to show on screen only
-            print('start print summary')
+
+# summery data to show on screen only
+
+            """ print('start print summary')
             print('start print summary')
             print('summary : ' , model.summary())
             print('model name : ',modelName)
@@ -609,9 +629,9 @@ def main():
             print("score " + str(score))
             print('myepochs '+ str(myepochs))
             #print("score " + str(score))
-            print('end out model summary')
+            print('end out model summary') """
             #input("Press Enter to continue...")
-
+         
 # End loop for epochs
         print("End loop for epochs")
         #input("Press Enter to continue...")
