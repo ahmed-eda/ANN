@@ -37,12 +37,12 @@ def main():
 # Start the 2 loops
  
 #   data to control looping
-    ELstart = 130#20 # starting epochs value
-    ELend = 150  # ending epochs value
-    ELstep = 20 # step of epochs
-    LayerLoopStart = 9 #1 # starting layers value
-    LayerLoopEnd = 11 # ending layers value
-    LayerLoopStep = 1 # step of layers
+    ELstart = 50#130#20 # starting epochs value
+    ELend = 550  # ending epochs value
+    ELstep = 50 # step of epochs
+    LayerLoopStart = 5 #9 #1 # starting layers value
+    LayerLoopEnd = 31 # ending layers value
+    LayerLoopStep = 5 # step of layers
     layersNum = LayerLoopStart # starting layers value
     # to collect all data in one excel sheet
     from datetime import datetime               
@@ -222,26 +222,26 @@ def main():
             ''' # compile the model      '''
 
             # define customized loss function 
-            #from keras import backend as BK
+            from keras import backend as BK
 # define customized loss function with data as an argument
             def my_custom_loss(y_true, y_pred,data_for_lossfunction):
                 y_pred = tf.cast(y_pred, tf.float64) # cast y_pred to float64
                 y_true = tf.cast(y_true, tf.float64)
                 # here write customized loss function
-                diff = np.square(y_true - y_pred)
+                diff = BK.square(y_true - y_pred)
 
-                errorbar = np.log( np.abs(data_for_lossfunction['err2']))  + np.log( np.abs(data_for_lossfunction['err1']))
+                errorbar = BK.log( BK.abs(data_for_lossfunction['err2']))  + BK.log( BK.abs(data_for_lossfunction['err1']))
                 #errorbar = np.log(errorbar)
                 # Divide the squared difference by the error bars
-                ratio = diff / np.square(errorbar)
+                ratio = diff / BK.square(errorbar)
                 # Sum the squared ratios
-                loss = np.sum(ratio)
+                loss = BK.sum(ratio)
                 # divide on the number of data
                 loss /= tf.cast(tf.shape(y_true)[0], tf.float64)
                 # divide the loss by 2
                 loss /= 2
                 # clac the square root
-                loss = np.sqrt(loss)
+                loss = BK.sqrt(loss)
 
                 # return the loss : the root mean square error
                 return loss
