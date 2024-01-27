@@ -37,11 +37,11 @@ def main():
 # Start the 2 loops
  
 #   data to control looping
-    ELstart = 20#130#20 # starting epochs value
-    ELend = 601  # ending epochs value
+    ELstart = 600#130#20 # starting epochs value
+    ELend = 701  # ending epochs value
     ELstep = 20 # step of epochs
-    LayerLoopStart = 4 #9 #1 # starting layers value
-    LayerLoopEnd = 15 # ending layers value
+    LayerLoopStart = 2 #9 #1 # starting layers value
+    LayerLoopEnd = 11 # ending layers value
     LayerLoopStep = 2 # step of layers
     layersNum = LayerLoopStart # starting layers value
 
@@ -159,7 +159,7 @@ def main():
             X = data[["mass", "s", "N part", "Pt"]]
             y = data["spectrum"].to_frame("spectrum")
 
-            y_ln = np.log(y['spectrum'])
+            y_ln = y['spectrum'] #np.log(y['spectrum'])
             #y_ln_df = pd.DataFrame(y_ln,columns=['ln spectrum'])
 
             print('y_ln -head : \n',y_ln.head)
@@ -234,7 +234,7 @@ def main():
                 # here write customized loss function
                 diff = BK.square(y_true - y_pred)
 
-                errorbar = BK.log( BK.abs(data_for_lossfunction['err2']))  + BK.log( BK.abs(data_for_lossfunction['err1']))
+                errorbar = BK.abs(data_for_lossfunction['err2'])  + BK.abs(data_for_lossfunction['err1']) #BK.log( BK.abs(data_for_lossfunction['err2']))  + BK.log( BK.abs(data_for_lossfunction['err1']))
                 #errorbar = np.log(errorbar)
                 # Divide the squared difference by the error bars
                 ratio = diff / BK.square(errorbar)
@@ -336,7 +336,7 @@ def main():
             predictions = predictions.to_frame('predictions')
 
             ###
-            predictions = np.exp(predictions)
+            predictions = predictions #np.exp(predictions)
             print(" ### predictions is : ")
             print(predictions)
             #mse = mean_squared_error(y,predictions)
@@ -363,7 +363,7 @@ def main():
             err1=data['err1'].to_frame('err1')
             err2=data['err2'].to_frame('err2')
             #SquareErrorForEachPoint = np.sqrt( ((datap['predictions']- datap['Spectrum'])/(err1- err2)))
-            excelLnErrorbar =    (np.log(np.abs(err1['err1']))+ np.log(np.abs(err2['err2'])))
+            excelLnErrorbar = (np.abs(err1['err1'] )+ np.abs(err2['err2']))    #(np.log(np.abs(err1['err1']))+ np.log(np.abs(err2['err2'])))
             # errorbar = np.log(errorbar)
             #excelLnErrorbar = np.log(excelLnErrorbar)
             SquareErrorForEachPoint =np.square( (datap['predictions']- datap['spectrum'])/(excelLnErrorbar))
